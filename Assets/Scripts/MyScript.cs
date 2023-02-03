@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
+
 
 public class MyScript : MonoBehaviour
 {
@@ -18,11 +21,16 @@ public class MyScript : MonoBehaviour
     private Vector3 respawnPoint;
     public GameObject fallDetector;
 
+    public TextMeshProUGUI scoreText;
+
+    
+
     // Start is called before the first frame update
     void Start()
     {
         player = GetComponent<Rigidbody2D>();
         respawnPoint = transform.position;
+        scoreText.text = "Score: " + Scoring.totalScore;
     }
 
     // Update is called once per frame
@@ -71,6 +79,12 @@ public class MyScript : MonoBehaviour
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
             respawnPoint = transform.position;
+        }
+        else if(collision.tag == "Cristal")
+        {
+            Scoring.totalScore += 1;
+            scoreText.text = "Score: " + Scoring.totalScore;
+            collision.gameObject.SetActive(false);
         }
 
     }
