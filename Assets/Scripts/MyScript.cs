@@ -18,17 +18,19 @@ public class MyScript : MonoBehaviour
     public LayerMask groundLayer;
     private bool isTouchingGround;
 
+    private Animator playerAnimation;
+
     private Vector3 respawnPoint;
     public GameObject fallDetector;
 
     public TextMeshProUGUI scoreText;
-
-    
+    public HealthBar healthBar;
 
     // Start is called before the first frame update
     void Start()
     {
         player = GetComponent<Rigidbody2D>();
+        playerAnimation = GetComponent<Animator>();
         respawnPoint = transform.position;
         scoreText.text = "Score: " + Scoring.totalScore;
     }
@@ -42,6 +44,7 @@ public class MyScript : MonoBehaviour
         if (direction > 0f)
         {
             player.velocity = new Vector2(direction * speed, player.velocity.y);
+
         }
         else if (direction < 0f)
         {
@@ -55,6 +58,9 @@ public class MyScript : MonoBehaviour
         {
             player.AddForce(new Vector2(0,speed), ForceMode2D.Impulse);
         }
+
+        playerAnimation.SetFloat("Speed", Mathf.Abs(player.velocity.x));
+        playerAnimation.SetBool("Ground", isTouchingGround);
 
         fallDetector.transform.position = new  Vector2 (transform.position.x, fallDetector.transform.position.y);
         
@@ -87,5 +93,13 @@ public class MyScript : MonoBehaviour
             collision.gameObject.SetActive(false);
         }
 
+    }
+
+      private void OnTriggerStay2D(Collider2D collision)
+    {
+        if(collision.tag == "Spike")
+        {
+            healthBar.Damage(0.003f);
+        }
     }
 }
